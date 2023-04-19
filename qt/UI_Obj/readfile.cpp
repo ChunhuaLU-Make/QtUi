@@ -29,9 +29,7 @@ bool ReadFile::readFile(const QString &fileName)
 
            if (reader.isStartElement()) //检测当前读取类型
            {
-               //if (reader.name() == "bookindex")
-
-               if(reader.name() == "root")
+               if (reader.name() == "bookindex")
                {
                    readBookindexElement();//递归下降算法，层层读取
                    //readTestCode();
@@ -102,7 +100,7 @@ void ReadFile::readTestCode(void)
 
 void ReadFile::readBookindexElement()
 {
-   Q_ASSERT(reader.isStartElement() && reader.name() == "root");//不是则会报错
+   Q_ASSERT(reader.isStartElement() && reader.name() == "bookindex");//不是则会报错
    reader.readNext(); // 读取下一个记号，它返回记号的类型
    while (!reader.atEnd())
    {
@@ -114,11 +112,11 @@ void ReadFile::readBookindexElement()
 
        if (reader.isStartElement())
        {
-           if (reader.name() == "man")
+           if (reader.name() == "entry")
            {
                /* 一个章节的开始。 */
-               //readEntryElement();
-               readChapter();
+               readEntryElement();
+
            }
            else
            {
@@ -132,77 +130,12 @@ void ReadFile::readBookindexElement()
    }
 }
 
-void ReadFile::readChapter(void)
-{
-    Q_ASSERT(reader.isStartElement() && reader.name() == "body");//不是则会报错
-    reader.readNext(); // 读取下一个记号，它返回记号的类型
-    while (!reader.atEnd())
-    {
-        if (reader.isEndElement())
-        {
-            reader.readNext();
-            break;
-        }
-
-        if (reader.isStartElement())
-        {
-            if (reader.name() == "sub-section")
-            {
-                /* 一个章节的开始。 */
-                //readEntryElement();
-                ReadParagraph();
-            }
-            else
-            {
-                skipUnknownElement();
-            }
-        }
-        else
-        {
-            reader.readNext();
-        }
-    }
-}
-
-
-
-void ReadFile::ReadParagraph(void)
-{
-    Q_ASSERT(reader.isStartElement() && reader.name() == "sub-section");//不是则会报错
-    reader.readNext(); // 读取下一个记号，它返回记号的类型
-    while (!reader.atEnd())
-    {
-        if (reader.isEndElement())
-        {
-            reader.readNext();
-            break;
-        }
-
-        if (reader.isStartElement())
-        {
-            if (reader.name() == "p")
-            {
-                /* 开始一个段落。 */
-                readEntryElement();
-            }
-            else
-            {
-                skipUnknownElement();
-            }
-        }
-        else
-        {
-            reader.readNext();
-        }
-    }
-}
-
 
 void ReadFile::readEntryElement(void)
 {
-    Q_ASSERT(reader.isStartElement() && reader.name() == "p");//不是则会报错
+    Q_ASSERT(reader.isStartElement() && reader.name() == "entry");//不是则会报错
 
-    //cout << reader.attributes().value("wx:val").toString();
+    cout << reader.attributes().value("term").toString();
 
     reader.readNext();
     while (!reader.atEnd())
@@ -217,11 +150,11 @@ void ReadFile::readEntryElement(void)
         {
             cout << reader.name();
 
-            if (reader.name() == "wx:t")
+            if (reader.name() == "entry")
             {
                 readEntryElement();
             }
-            else if (reader.name() == "w:t")
+            else if (reader.name() == "page")
             {
                 readPageElement();
             }

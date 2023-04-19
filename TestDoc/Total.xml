@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?mso-application progid="Word.Document"?>
+
+<w:wordDocument xmlns:aml="http://schemas.microsoft.com/aml/2001/core" xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" xmlns:cx="http://schemas.microsoft.com/office/drawing/2014/chartex" xmlns:cx1="http://schemas.microsoft.com/office/drawing/2015/9/8/chartex" xmlns:cx2="http://schemas.microsoft.com/office/drawing/2015/10/21/chartex" xmlns:cx3="http://schemas.microsoft.com/office/drawing/2016/5/9/chartex" xmlns:cx4="http://schemas.microsoft.com/office/drawing/2016/5/10/chartex" xmlns:cx5="http://schemas.microsoft.com/office/drawing/2016/5/11/chartex" xmlns:cx6="http://schemas.microsoft.com/office/drawing/2016/5/12/chartex" xmlns:cx7="http://schemas.microsoft.com/office/drawing/2016/5/13/chartex" xmlns:cx8="http://schemas.microsoft.com/office/drawing/2016/5/14/chartex" xmlns:cr="http://schemas.microsoft.com/office/comments/2020/reactions" xmlns:dt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:aink="http://schemas.microsoft.com/office/drawing/2016/ink" xmlns:am3d="http://schemas.microsoft.com/office/drawing/2017/model3d" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:oel="http://schemas.microsoft.com/office/2019/extlst" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w10="urn:schemas-microsoft-com:office:word" xmlns:w="http://schemas.microsoft.com/office/word/2003/wordml" xmlns:wx="http://schemas.microsoft.com/office/word/2003/auxHint" xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml" xmlns:wsp="http://schemas.microsoft.com/office/word/2003/wordml/sp2" xmlns:sl="http://schemas.microsoft.com/schemaLibrary/2003/core" w:macrosPresent="no" w:embeddedObjPresent="no" w:ocxPresent="no" xml:space="preserve"> 
+	<w:body>
+		<wx:sub-section>
+			<w:p> 
+				<w:pPr>
+					<w:listPr>
+						<wx:t wx:val="3.1.1.2.2."/>
+					</w:listPr>
+				</w:pPr>
+				<w:r>
+					<w:t>综调中心</w:t>
+				</w:r>
+				<w:r>
+					<w:t>>中台质检功能我的待办管理</w:t>
+				</w:r>
+			</w:p>
+			
+			<wx:sub-section>
+				<w:p>
+					<w:pPr>
+						<w:listPr>
+							<wx:t wx:val="3.1.1.2.1."/>
+						</w:listPr>
+					</w:pPr>
+					<w:r>
+						<w:t>中台质检功能我的待办</w:t>
+					</w:r>
+					<w:r>
+						<w:t>任务信息查询</w:t>
+					</w:r>
+				</w:p>
+				<w:p>
+					<w:r>
+						<w:t>选择</w:t>
+					</w:r>
+					<w:r>
+						<w:t>中台质检功能我的待办</w:t>
+					</w:r>
+					<w:r>
+						<w:t>任务信息查询，查询</w:t>
+					</w:r>
+					<w:r>
+						<w:t>中台质检功能我的待办</w:t>
+					</w:r>
+					<w:r>
+						<w:t>任务信息、</w:t>
+					</w:r>
+					<w:r>
+						<w:t>中台质检功能我的待办</w:t>
+					</w:r>
+					<w:r>
+						<w:t>个人处理任务信息。</w:t>
+					</w:r>
+				</w:p>
+			</wx:sub-section>
+		</wx:sub-section>
+		<wx:sub-section>
+		</wx:sub-section>
+	</w:body>
+</w:wordDocument>
+
