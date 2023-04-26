@@ -3,7 +3,7 @@
 #include <QDebug>
 #include <QFile>
 
-#define cout qDebug()<<"["<<__FILE__<<";"<<__LINE__<<"]"
+#define cout qDebug()<<"["<<__FUNCTION__<<";"<<__LINE__<<"]"
 
 ReadFile::ReadFile()
 {
@@ -26,12 +26,11 @@ bool ReadFile::readFile(const QString &fileName)
        reader.setDevice(&file);
        while (!reader.atEnd())
        {
-
-           if (reader.isStartElement()) //检测当前读取类型
+           if (reader.isStartElement())
            {
                if (reader.name() == "bookindex")
                {
-                   readBookindexElement();//递归下降算法，层层读取
+                   readBookindexElement();
                    //readTestCode();
                }
                else
@@ -42,7 +41,7 @@ bool ReadFile::readFile(const QString &fileName)
            else
            {
                qDebug()<<"111111111111111";
-               reader.readNext(); //循坏调用首次移动3次，后面移动一次
+               reader.readNext();
            }
        }
        file.close();
@@ -62,7 +61,7 @@ bool ReadFile::readFile(const QString &fileName)
 
 void ReadFile::readTestCode(void)
 {
-    Q_ASSERT(reader.isStartElement() && reader.name() == "wordDocument");//不是则会报错
+    Q_ASSERT(reader.isStartElement() && reader.name() == "wordDocument");
     reader.readNext();
     while (!reader.atEnd())
     {
@@ -100,8 +99,8 @@ void ReadFile::readTestCode(void)
 
 void ReadFile::readBookindexElement()
 {
-   Q_ASSERT(reader.isStartElement() && reader.name() == "bookindex");//不是则会报错
-   reader.readNext(); // 读取下一个记号，它返回记号的类型
+   Q_ASSERT(reader.isStartElement() && reader.name() == "bookindex");
+   reader.readNext();
    while (!reader.atEnd())
    {
        if (reader.isEndElement())
@@ -114,7 +113,6 @@ void ReadFile::readBookindexElement()
        {
            if (reader.name() == "entry")
            {
-               /* 一个章节的开始。 */
                readEntryElement();
 
            }
@@ -133,11 +131,16 @@ void ReadFile::readBookindexElement()
 
 void ReadFile::readEntryElement(void)
 {
-    Q_ASSERT(reader.isStartElement() && reader.name() == "entry");//不是则会报错
+    Q_ASSERT(reader.isStartElement() && reader.name() == "entry");
 
     cout << reader.attributes().value("term").toString();
 
-    reader.readNext();
+    cout << reader.readElementText();
+    reader.readNext();  //</entry>
+    reader.readNext();  //<page1>
+    cout << reader.readElementText();
+
+
     while (!reader.atEnd())
     {
         if (reader.isEndElement())
@@ -165,6 +168,7 @@ void ReadFile::readEntryElement(void)
         }
         else
         {
+
             reader.readNext();
         }
     }
@@ -173,6 +177,8 @@ void ReadFile::readEntryElement(void)
 void ReadFile::readPageElement(void)
 {
     QString page = reader.readElementText();
+    cout << "page:" << page;
+#if 0
     if (reader.isEndElement())
     {
         qDebug() <<"3333333333333333";
@@ -186,6 +192,8 @@ void ReadFile::readPageElement(void)
     }
     allPages += page;
     cout << allPages;
+#endif
+
 }
 
 
@@ -203,10 +211,14 @@ void ReadFile::skipUnknownElement()
         if (reader.isStartElement())
         {
             skipUnknownElement();
+            break;
         }
         else
         {
+             //cout << reader.readElementText();
+             //cout << reader.text();
             reader.readNext();
+
         }
     }
 }
