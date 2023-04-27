@@ -7,7 +7,7 @@
 
 ReadFile::ReadFile()
 {
-
+    tileFlg = false;
 }
 
 ReadFile::~ReadFile()
@@ -28,10 +28,9 @@ bool ReadFile::readFile(const QString &fileName)
        {
            if (reader.isStartElement())
            {
-               if (reader.name() == "bookindex")
+               if (reader.name() == "wordDocument")
                {
                    readBookindexElement();
-                   //readTestCode();
                }
                else
                {
@@ -59,47 +58,9 @@ bool ReadFile::readFile(const QString &fileName)
 
 }
 
-void ReadFile::readTestCode(void)
-{
-    Q_ASSERT(reader.isStartElement() && reader.name() == "wordDocument");
-    reader.readNext();
-    while (!reader.atEnd())
-    {
-        if (reader.isEndElement())
-        {
-            reader.readNext();
-            break;
-        }
-
-        if (reader.isStartElement())
-        {
-            if (reader.name() == "body")
-            {
-                cout << reader.name();  //body
-                reader.readNext();
-                cout << reader.name();  // ""
-                reader.readNext();
-                cout << reader.name();   //sub-section
-                reader.readNext();
-                cout << reader.name();  //""
-                reader.readNext();
-                cout << reader.name();  //p
-            }
-            else
-            {
-                skipUnknownElement();
-            }
-        }
-        else
-        {
-            reader.readNext();
-        }
-    }
-}
-
 void ReadFile::readBookindexElement()
 {
-   Q_ASSERT(reader.isStartElement() && reader.name() == "bookindex");
+   Q_ASSERT(reader.isStartElement() && reader.name() == "wordDocument");
    reader.readNext();
    while (!reader.atEnd())
    {
@@ -109,9 +70,10 @@ void ReadFile::readBookindexElement()
            break;
        }
 
+       cout << reader.name();
        if (reader.isStartElement())
        {
-           if (reader.name() == "entry")
+           if (reader.name() == "body")
            {
                readEntryElement();
 
@@ -131,9 +93,7 @@ void ReadFile::readBookindexElement()
 
 void ReadFile::readEntryElement(void)
 {
-    Q_ASSERT(reader.isStartElement() && reader.name() == "entry");
-
-    cout << reader.attributes().value("term").toString();
+    Q_ASSERT(reader.isStartElement() && reader.name() == "body");
 
     reader.readNext();  //</entry>
 
@@ -147,15 +107,91 @@ void ReadFile::readEntryElement(void)
 
         if (reader.isStartElement())
         {
-            cout << reader.name();
 
-            if (reader.name() == "entry")
+            if (reader.name() == "sub-section")
             {
-                readEntryElement();
+                ReadSubSection();
             }
+#if 0
             else if (reader.name() == "page")
             {
                 readPageElement();
+            }
+#endif
+            else
+            {
+                skipUnknownElement();
+            }
+        }
+        else
+        {
+
+            reader.readNext();
+        }
+    }
+}
+
+
+void ReadFile::ReadSubSection(void)
+{
+    Q_ASSERT(reader.isStartElement() && reader.name() == "sub-section");
+    reader.readNext();
+    while (!reader.atEnd())
+    {
+        if (reader.isEndElement())
+        {
+            reader.readNext();
+            break;
+        }
+
+        if (reader.isStartElement())
+        {
+            cout << reader.name();
+            if (reader.name() == "p")
+            {
+                ReadSubSection();
+            }
+            else if(reader.name() == "t")
+            {
+                cout << reader.attributes().value("wx:val").toString();
+            }
+            else
+            {
+                skipUnknownElement();
+            }
+        }
+        else
+        {
+
+            reader.readNext();
+        }
+    }
+}
+
+void ReadFile::ReadListPr(void)
+{
+     Q_ASSERT(reader.isStartElement() && reader.name() == "listPr");
+    reader.readNext();
+    while (!reader.atEnd())
+    {
+        if (reader.isEndElement())
+        {
+            reader.readNext();
+            break;
+        }
+
+        if (reader.isStartElement())
+        {
+            if(reader.name() == "listPr")
+            {
+                tileFlg = true;
+                reader.readNext();
+            }
+            else if(reader.name() == "t" && tileFlg == true)
+            {
+                cout << reader.attributes().value("wx:val").toString();
+                tileFlg = false;
+                reader.readNext();
             }
             else
             {
@@ -208,8 +244,6 @@ void ReadFile::skipUnknownElement()
         }
         else
         {
-             //cout << reader.readElementText();
-             //cout << reader.text();
             reader.readNext();
 
         }

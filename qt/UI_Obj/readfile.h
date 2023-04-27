@@ -9,8 +9,10 @@ public:
     ~ReadFile();
     bool readFile(const QString &fileName);
 private:
+    void ReadListPr(void);
+    void ReadText(void);
+    void ReadSubSection(void);
     void ReadParagraphNext(void);
-    void readTestCode(void);
     void readChapter(void);
     void ReadParagraph(void);
     void readBookindexElement();
@@ -18,6 +20,8 @@ private:
     void readPageElement(void);
     void skipUnknownElement(void);
     QXmlStreamReader reader;
+
+    bool tileFlg;
 };
 
 #endif // XMLREAGER_H
