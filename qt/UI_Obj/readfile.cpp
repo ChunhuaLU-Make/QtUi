@@ -135,11 +135,7 @@ void ReadFile::readEntryElement(void)
 
     cout << reader.attributes().value("term").toString();
 
-    cout << reader.readElementText();
     reader.readNext();  //</entry>
-    reader.readNext();  //<page1>
-    cout << reader.readElementText();
-
 
     while (!reader.atEnd())
     {
@@ -177,8 +173,7 @@ void ReadFile::readEntryElement(void)
 void ReadFile::readPageElement(void)
 {
     QString page = reader.readElementText();
-    cout << "page:" << page;
-#if 0
+
     if (reader.isEndElement())
     {
         qDebug() <<"3333333333333333";
@@ -192,8 +187,6 @@ void ReadFile::readPageElement(void)
     }
     allPages += page;
     cout << allPages;
-#endif
-
 }
 
 
