@@ -8,17 +8,11 @@ public:
     ReadFile();
     ~ReadFile();
     bool readFile(const QString &fileName);
+
 private:
-    void ReadListPr(void);
-    void ReadText(void);
-    void ReadSubSection(void);
-    void ReadParagraphNext(void);
-    void readChapter(void);
-    void ReadParagraph(void);
-    void readBookindexElement();
-    void readEntryElement(void);
-    void readPageElement(void);
-    void skipUnknownElement(void);
+    int subSectionCont = 0;
+    void ReadP(QString& str);
+    void StartReadData(void);
     QXmlStreamReader reader;
 
     bool tileFlg;

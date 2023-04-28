@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
 void MainWindow::MyPrintf(void)
 {
     ReadFile reader;
-    reader.readFile("E:\\Git\\QtUi\\TestDoc\\Total.xml");
+    reader.readFile("E:\\Git\\QtUi\\TestDoc\\Mytest.xml");
 }
 
 MainWindow::~MainWindow()
