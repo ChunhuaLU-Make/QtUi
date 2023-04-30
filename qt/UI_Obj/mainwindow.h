@@ -15,11 +15,13 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    static void MyPrintf();
+
 private:
     Ui::MainWindow *ui;
 
 private slots:
-    void MyPrintf();
+    //void MyPrintf();
 
 };
 #endif // MAINWINDOW_H
