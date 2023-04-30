@@ -17,13 +17,13 @@ private:
 
     QFile* file = NULL;
 
-    void WriteTextToFile(QString text);
     void ReadeNameWF(QString infor, int lineNumber);
     void ReadP(QString& str);
 
     void ReadBody(void);
     void ReadSubSection(void);
     void SkipUnknownElement(void);
+    bool AnalyseData(QString& str);
 
     void StartReadData(void);
     QXmlStreamReader reader;

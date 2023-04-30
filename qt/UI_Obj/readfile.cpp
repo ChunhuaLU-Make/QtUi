@@ -26,13 +26,6 @@ void ReadFile::ReadeNameWF(QString infor, int lineNumber)
 
 }
 
-
-
-void ReadFile::WriteTextToFile(QString fText)
-{
-    file->write(fText.toUtf8());
-}
-
 ReadFile::ReadFile()
 {
     file = new QFile("./tempSave.txt");
@@ -68,7 +61,7 @@ bool ReadFile::readFile(const QString &fileName)
            {
                if (reader.name() == "wordDocument")
                {
-                   StartReadData();
+                   ReadBody();
                }
                else
                {
@@ -99,31 +92,23 @@ bool ReadFile::readFile(const QString &fileName)
 void ReadFile::ReadSubSection(void)
 {
     Q_ASSERT(reader.isStartElement() && reader.name() == "body");
-    reader.readNext();
+
     while (!reader.atEnd())
     {
+        reader.readNext();
+
        if (reader.isEndElement())
        {
            reader.readNext();
-           break;
+           continue;
        }
-
-       cout << reader.name();
        if (reader.isStartElement())
        {
            if (reader.name() == "sub-section")
            {
+               cout << reader.name();
                StartReadData();
-
            }
-           else
-           {
-               SkipUnknownElement();
-           }
-       }
-       else
-       {
-           reader.readNext();
        }
     }
 }
@@ -139,14 +124,11 @@ void ReadFile::ReadBody(void)
            reader.readNext();
            break;
        }
-
-       cout << reader.name();
        if (reader.isStartElement())
        {
            if (reader.name() == "body")
            {
                ReadSubSection();
-
            }
            else
            {
@@ -160,71 +142,92 @@ void ReadFile::ReadBody(void)
     }
 }
 
-void ReadFile::StartReadData(void)
+
+bool ReadFile::AnalyseData(QString& str)
+{
+    static bool listPrFlg = false;
+    QStringRef rderName = reader.name();
+    if(rderName == "listPr")
+    {
+        //Set title flag.
+        listPrFlg = true;
+    }
+    else if(listPrFlg == true && rderName == 't')
+    {
+        //Read attribute.
+        str += reader.attributes().value("wx:val").toString();
+        listPrFlg = false;
+    }
+    else if(rderName == 't')
+    {
+        str += reader.readElementText();
+        if(reader.isEndElement())
+        {
+            reader.readNext();
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void ReadFile::ReadP(QString& str)
 {
     reader.readNext();
     while (!reader.atEnd())
     {
         if (reader.isEndElement())
         {
-            //ReadeNameWF("Exit", __LINE__);
-            //cout << reader.name();
-            if(reader.name() == 'p')
-            {
-                WriteTextToFile("\n");
-            }
             reader.readNext();
             break;
         }
 
         if (reader.isStartElement())
         {
-            //cout << reader.name();
-            //ReadeNameWF("Input", __LINE__);
-            QString str;
-            str.clear();
-            QString readName = reader.name().toString();
-            if(readName == "listPr")
+            if(AnalyseData(str) == false)
             {
-                titleFlg = true;
+                ReadP(str);
             }
-            else if(titleFlg == true && readName == "t")
+        }
+        else
+        {
+            reader.readNext();
+
+        }
+
+    }
+}
+
+void ReadFile::StartReadData(void)
+{
+    Q_ASSERT(reader.isStartElement() && reader.name() == "sub-section");
+    reader.readNext();
+    while (!reader.atEnd())
+    {
+        if (reader.isEndElement())
+        {
+            reader.readNext();
+            break;
+        }
+
+        if (reader.isStartElement())
+        {
+            QStringRef rderName = reader.name();
+            if(rderName == 'p')
             {
-                str += reader.attributes().value("wx:val").toString();
-                titleFlg = false;
-            }
-            else if(readName == "t")
-            {
-                //str += reader.text().toString();
-
-                str += reader.readElementText();
-                if(reader.isEndElement())
-                {
-                    reader.readNext();
-                }
-
-goto target;
-
-            }
-
-            i++;
-            StartReadData();
-            k++;
-            if(file != NULL)
-            {
-                QString str = QString("xmlLin:%1 k:%2, i:%3").arg(reader.columnNumber()).arg(k).arg(i);
+                QString str;
+                str.clear();
+                ReadP(str);
                 str += '\n';
-                //file->write(str.toUtf8());
-                //QString str = "K:" << k <<','<< "i:"<<i;
+                file->write(str.toUtf8());
+            }
+            else if(rderName == "sub-section")
+            {
+                StartReadData();
             }
             else
             {
-                qDebug()<<"File is error";
-            }
-target:
-            if(str.isNull() == false)
-            {
-                 WriteTextToFile(str);
+                SkipUnknownElement();
             }
         }
         else
