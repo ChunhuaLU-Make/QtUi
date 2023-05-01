@@ -95,13 +95,12 @@ void ReadFile::ReadSubSection(void)
 
     while (!reader.atEnd())
     {
-        reader.readNext();
-
        if (reader.isEndElement())
        {
            reader.readNext();
            continue;
        }
+
        if (reader.isStartElement())
        {
            if (reader.name() == "sub-section")
@@ -109,6 +108,14 @@ void ReadFile::ReadSubSection(void)
                cout << reader.name();
                StartReadData();
            }
+           else
+           {
+               reader.readNext();
+           }
+       }
+       else
+       {
+           reader.readNext();
        }
     }
 }
@@ -158,7 +165,8 @@ bool ReadFile::AnalyseData(QString& str)
         str += reader.attributes().value("wx:val").toString();
         listPrFlg = false;
     }
-    else if(rderName == 't')
+
+    if(rderName == 't')
     {
         str += reader.readElementText();
         if(reader.isEndElement())
