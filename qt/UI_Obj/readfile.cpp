@@ -3,10 +3,27 @@
 #include <QDebug>
 #include <QFile>
 #include <QtTest>
+#include "DirLevAnaly.h"
 
 #define cout qDebug()<<"["<<__FUNCTION__<<";"<<__LINE__<<"]"
 
 #define WRITEFIL() QString hStr=QString("%1").arg(__LINE__); file->write(hStr + reader.name().toUtf8() + '\n')
+
+ReadFile::ReadFile(QString filePath):VectorSaveDir()
+{
+    file = new QFile("./tempSave.txt");
+    bool openOk=file->open(QIODevice::WriteOnly);
+    if(!openOk)
+    {
+        qDebug() << "Open fiel fail";
+        file = NULL;
+    }
+
+    this->readFile(filePath);
+
+    qDebug() <<"++++++++++++++++++++++++++++";
+    this->MyPrintFileDir();
+}
 
 void ReadFile::ReadeNameWF(QString infor, int lineNumber)
 {
@@ -24,18 +41,6 @@ void ReadFile::ReadeNameWF(QString infor, int lineNumber)
         cout << "File not exit.";
     }
 
-}
-
-ReadFile::ReadFile()
-{
-    file = new QFile("./tempSave.txt");
-    bool openOk=file->open(QIODevice::WriteOnly);
-    if(!openOk)
-    {
-        qDebug() << "Open fiel fail";
-        file = NULL;
-    }
-    tileFlg = false;
 }
 
 ReadFile::~ReadFile()
@@ -107,6 +112,7 @@ void ReadFile::ReadSubSection(void)
            {
                cout << reader.name();
                StartReadData();
+               this->SaveDirToLevDir();
            }
            else
            {
@@ -228,9 +234,13 @@ void ReadFile::StartReadData(void)
                 ReadP(str);
                 str += '\n';
                 file->write(str.toUtf8());
+                this->SaveDirToVector(str);
+                // qDebug() << str;
+
             }
             else if(rderName == "sub-section")
             {
+                qDebug() << "------------------";
                 StartReadData();
             }
             else

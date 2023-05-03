@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "readfile.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -15,10 +16,12 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    static void MyPrintf();
+    void MyPrintf();
 
 private:
     Ui::MainWindow *ui;
+    ReadFile* readXml;
+
 
 private slots:
     //void MyPrintf();

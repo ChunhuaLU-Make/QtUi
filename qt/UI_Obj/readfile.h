@@ -2,11 +2,13 @@
 #define READFILE_H
 #include <QXmlStreamReader>
 #include <QFile>
+#include <QVector>
+#include "VectorSaveDir.h"
 
-class ReadFile
+class ReadFile:public VectorSaveDir
 {
 public:
-    ReadFile();
+    ReadFile(QString filePath);
     ~ReadFile();
     bool readFile(const QString &fileName);
 
@@ -16,6 +18,7 @@ private:
     bool titleFlg = false;
 
     QFile* file = NULL;
+    QVector<QVector<QString>> fileDir;
 
     void ReadeNameWF(QString infor, int lineNumber);
     void ReadP(QString& str);
@@ -28,7 +31,6 @@ private:
     void StartReadData(void);
     QXmlStreamReader reader;
 
-    bool tileFlg;
 };
 
 #endif // XMLREAGER_H
