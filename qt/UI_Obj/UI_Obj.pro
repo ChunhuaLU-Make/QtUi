@@ -1,8 +1,8 @@
-QT       += core gui testlib
+QT       += core gui testlib axcontainer
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++17
+CONFIG += c++11
 
 CONFIG += qaxcontainer
 
@@ -13,11 +13,17 @@ CONFIG += qaxcontainer
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    DirLevAnaly.cpp \
+    ExcelOperation.cpp \
+    VectorSaveDir.cpp \
     main.cpp \
     mainwindow.cpp \
     readfile.cpp
 
 HEADERS += \
+    DirLevAnaly.h \
+    ExcelOperation.h \
+    VectorSaveDir.h \
     mainwindow.h \
     readfile.h
 
