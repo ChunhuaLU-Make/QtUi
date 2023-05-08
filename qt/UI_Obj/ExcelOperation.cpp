@@ -168,7 +168,7 @@ bool ExcelOperation::ExcelReadExcel(QString &path)
     //基于坐标的读法
     QAxObject *range1 = worksheet->querySubObject("Cells(int, int)", 2 , 1);
     QString strRow6Col6 = range1->property("Value").toString();
-    qDebug() << "第6行，第6列的数据为：" + strRow6Col6;
+    qDebug() << "The 6line data is:" + strRow6Col6;
 
 
     //读取一列
@@ -177,9 +177,9 @@ bool ExcelOperation::ExcelReadExcel(QString &path)
     QString temp;
     int i = 1;
 
-    for (; i < iRows ; i ++)
+    for (; i <= iRows ; i ++)
     {
-        range1 = worksheet->querySubObject("Cells(int, int)", i , 1);
+        range1 = worksheet->querySubObject("Cells(int, int)", i , 2);
 
         qDebug() <<  range1->property("Value").toString() << Qt::endl;
     }
