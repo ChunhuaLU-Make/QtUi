@@ -4,6 +4,30 @@
 #include <QDebug>
 #include "ExcelOperation.h"
 
+void ExcelTest(void)
+{
+    ExcelOperation fileExcel("E:\\Git\\QtUi\\TestDoc\\testEx.xlsx", "Sheet3");
+    qDebug() << "workSheet:" << fileExcel.iWorkSheet;
+    fileExcel.ExcelWriteExcel(1,1,"Waht you name");
+    fileExcel.ExcelWriteExcel(1,2,"How are you");
+    fileExcel.ExcelWriteExcel(1,3,"Yinli");
+
+    qDebug() << fileExcel.iRows << " " << fileExcel.iColumns;
+    qDebug() << fileExcel.iStartRow << " " << fileExcel.iStartColumn;
+
+    for(int i = fileExcel.iStartRow; i <= fileExcel.iRows+fileExcel.iStartRow - 1; i++)
+    {
+        for(int k = fileExcel.iStartColumn; k<=fileExcel.iColumns+fileExcel.iStartColumn-1; k++)
+        {
+            qDebug() << "i" << i << " k" << k;
+            QString str = fileExcel.ExcelReadExcel(i,k);
+            if(str.isEmpty() != true)
+            qDebug() <<str;
+        }
+    }
+
+}
+
 int main(int argc, char *argv[])
 {
 #if 1
@@ -11,8 +35,8 @@ int main(int argc, char *argv[])
     MainWindow w;
     //w.MyPrintf();
 #endif
-    QString strPath("E:\\Git\\QtUi\\TestDoc\\testEx.xlsx");
-    ExcelOperation::ExcelReadExcel(strPath);
+    ExcelTest();
+
     qDebug() << "hello world";
     w.show();
     return a.exec();
