@@ -21,8 +21,9 @@ ReadFile::ReadFile(QString filePath):VectorSaveDir()
 
     this->readFile(filePath);
 
-    qDebug() <<"++++++++++++++++++++++++++++";
-    this->MyPrintFileDir();
+
+    //qDebug() <<"++++++++++++++++++++++++++++";
+    //this->MyPrintFileDir();
 }
 
 void ReadFile::ReadeNameWF(QString infor, int lineNumber)
@@ -232,9 +233,9 @@ void ReadFile::StartReadData(void)
                 QString str;
                 str.clear();
                 ReadP(str);
+                this->SaveDirToVector(str);
                 str += '\n';
                 file->write(str.toUtf8());
-                this->SaveDirToVector(str);
                 // qDebug() << str;
 
             }

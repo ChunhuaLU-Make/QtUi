@@ -18,9 +18,11 @@ public:
 
     void MyPrintFileDir(void);
 
+    QVector<QVector<QVector<QString>>> fileDir;
+
 private:
     QVector<QVector<QString>> levDir;
-    QVector<QVector<QVector<QString>>> fileDir;
+
 
     QVector<QString> tempDir1;
     QVector<QString> tempDir2;

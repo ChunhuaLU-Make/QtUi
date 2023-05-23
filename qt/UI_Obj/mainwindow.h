@@ -17,11 +17,11 @@ public:
     ~MainWindow();
 
     void MyPrintf();
+    //void SaveFileDirToExcel(void);
 
 private:
     Ui::MainWindow *ui;
     ReadFile* readXml;
-
 
 private slots:
     //void MyPrintf();

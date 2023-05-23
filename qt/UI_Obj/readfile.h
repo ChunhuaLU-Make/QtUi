@@ -18,7 +18,6 @@ private:
     bool titleFlg = false;
 
     QFile* file = NULL;
-    QVector<QVector<QString>> fileDir;
 
     void ReadeNameWF(QString infor, int lineNumber);
     void ReadP(QString& str);
