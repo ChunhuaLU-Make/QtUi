@@ -12,6 +12,7 @@ void ExcelTest(void)
     fileExcel.ExcelWriteExcel(1,2,"How are you");
     fileExcel.ExcelWriteExcel(1,3,"Yinli");
 
+    fileExcel.ExcelUpdateRowColu();
     qDebug() << fileExcel.iRows << " " << fileExcel.iColumns;
     qDebug() << fileExcel.iStartRow << " " << fileExcel.iStartColumn;
 

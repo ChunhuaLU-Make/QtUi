@@ -19,6 +19,7 @@ public:
     bool ExcelWriteExcel(int row, int column, QString msg);
     QString ExcelReadExcel(int row, int column);
 
+    void ExcelUpdateRowColu(void);
 
 private:
     QAxObject *excel = NULL;    //本例中，excel设定为Excel文件的操作对象

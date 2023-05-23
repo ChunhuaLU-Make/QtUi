@@ -37,7 +37,7 @@ ExcelOperation::ExcelOperation(QString path, QString sheetName)
     // Get opened excel file all work sheet.
     worksheets = workbook->querySubObject("WorkSheets");
 
-    iWorkSheet = worksheets->property("Count").toInt();
+    this->iWorkSheet = worksheets->property("Count").toInt();
 
     this->worksheet = ExcelOpenWorkSheet(sheetName);
     if(this->worksheet == NULL)
@@ -46,22 +46,8 @@ ExcelOperation::ExcelOperation(QString path, QString sheetName)
         return ;
     }
 
-    //—————————获取该sheet的数据范围（可以理解为有数据的矩形区域）————
-    QAxObject* usedrange = worksheet->querySubObject("UsedRange");
-
-    //———————————————————获取行数———————————————
-    QAxObject* rows = usedrange->querySubObject("Rows");
-    iRows = rows->property("Count").toInt();
-
-    //————————————获取列数—————————
-    QAxObject* columns = usedrange->querySubObject("Columns");
-    iColumns = columns->property("Count").toInt();
-
-    //————————数据的起始行———
-    iStartRow = rows->property("Row").toInt();
-
-    //————————数据的起始列————————————
-    iStartColumn = columns->property("Column").toInt();
+    /* Update current row column.*/
+    ExcelUpdateRowColu();
 }
 
 ExcelOperation::~ExcelOperation()
@@ -76,6 +62,26 @@ ExcelOperation::~ExcelOperation()
     }
 
     CoUninitialize();
+}
+
+void ExcelOperation::ExcelUpdateRowColu(void)
+{
+    //—————————获取该sheet的数据范围（可以理解为有数据的矩形区域）————
+    QAxObject* usedrange = worksheet->querySubObject("UsedRange");
+
+    //———————————————————获取行数———————————————
+    QAxObject* rows = usedrange->querySubObject("Rows");
+    this->iRows = rows->property("Count").toInt();
+
+    //————————————获取列数—————————
+    QAxObject* columns = usedrange->querySubObject("Columns");
+    this->iColumns = columns->property("Count").toInt();
+
+    //————————数据的起始行———
+    this->iStartRow = rows->property("Row").toInt();
+
+    //————————数据的起始列————————————
+    this->iStartColumn = columns->property("Column").toInt();
 }
 
 bool ExcelOperation::ExcelCheckFile(QString strPath)
