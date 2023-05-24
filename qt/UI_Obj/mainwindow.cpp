@@ -26,7 +26,11 @@ void MainWindow::MyPrintf(void)
 
 MainWindow::~MainWindow()
 {
-    delete this->readXml;
+    if(readXml != NULL)
+    {
+        delete readXml;
+    }
+
     delete ui;
 }
 

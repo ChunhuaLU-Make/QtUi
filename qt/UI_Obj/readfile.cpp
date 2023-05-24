@@ -19,8 +19,13 @@ ReadFile::ReadFile(QString filePath)
         file = NULL;
     }
 
+    /* Create a excel.*/
     excelFile = new ExcelOperation("E:\\Git\\QtUi\\TestDoc\\testEx.xlsx", "Sheet3");
 
+    /* Excel default start row is 1. */
+    row = 1;
+
+    /* Analysis XML. */
     this->readFile(filePath);
 
 
@@ -43,7 +48,6 @@ void ReadFile::ReadeNameWF(QString infor, int lineNumber)
     {
         cout << "File not exit.";
     }
-
 }
 
 ReadFile::~ReadFile()
@@ -236,8 +240,10 @@ void ReadFile::StartReadData(void)
                 QString str;
                 str.clear();
                 ReadP(str);
-                //this->SaveDirToVector(str);
+
+                /* Save data to excel.*/
                 this->ReadFileSaveToExcel(str);
+
                 str += '\n';
                 file->write(str.toUtf8());
                 // qDebug() << str;
@@ -285,43 +291,19 @@ void ReadFile::SkipUnknownElement(void)
     }
 }
 
-
+/**
+ * @brief ReadFile::ReadFileSaveToExcel
+ * @param inputStr docx dir string.
+ * Save dir to excel. die level max is 6.
+ */
 void ReadFile::ReadFileSaveToExcel(QString inputStr)
 {
-    static int row = 1;
     DirLevAnaly levAnaly(inputStr.toStdString());
     int dirLev = levAnaly.GetDirLev();
-    switch (dirLev)
+    if(dirLev != 0)
     {
-    case DIR_LEVE1:
-        excelFile->ExcelWriteExcel(row, 1, inputStr);
-        break;
-
-    case DIR_LEVE2:
-        excelFile->ExcelWriteExcel(row, 2, inputStr);
-        break;
-
-    case DIR_LEVE3:
-        excelFile->ExcelWriteExcel(row, 3, inputStr);
-        break;
-
-    case DIR_LEVE4:
-        excelFile->ExcelWriteExcel(row, 4, inputStr);
-        break;
-
-    case DIR_LEVE5:
-        excelFile->ExcelWriteExcel(row, 5, inputStr);
-        break;
-
-     case DIR_LEVE6:
-        excelFile->ExcelWriteExcel(row, 6, inputStr);
-        break;
-
-    default:
-        qDebug() << "Dir is error:" << dirLev;
-        break;
+        excelFile->ExcelWriteExcel(row, dirLev, inputStr);
+        row++;
     }
-
-    if(dirLev >= DIR_LEVE1 && dirLev < DIR_LEVE_MAX) row++;
 }
 

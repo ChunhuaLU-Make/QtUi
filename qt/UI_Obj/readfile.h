@@ -7,16 +7,6 @@
 
 class ReadFile
 {
-    enum
-    {
-        DIR_LEVE1 = 1,
-        DIR_LEVE2,
-        DIR_LEVE3,
-        DIR_LEVE4,
-        DIR_LEVE5,
-        DIR_LEVE6,
-        DIR_LEVE_MAX
-    };
 
 public:
     ReadFile(QString filePath);
@@ -26,6 +16,7 @@ public:
 private:
     int subSectionCont = 0;
     int k = 0, i = 0;
+    int row = 0;
     bool titleFlg = false;
 
     QFile* file = NULL;
