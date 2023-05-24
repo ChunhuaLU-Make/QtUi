@@ -3,10 +3,21 @@
 #include <QXmlStreamReader>
 #include <QFile>
 #include <QVector>
-#include "VectorSaveDir.h"
+#include "ExcelOperation.h"
 
-class ReadFile:public VectorSaveDir
+class ReadFile
 {
+    enum
+    {
+        DIR_LEVE1 = 1,
+        DIR_LEVE2,
+        DIR_LEVE3,
+        DIR_LEVE4,
+        DIR_LEVE5,
+        DIR_LEVE6,
+        DIR_LEVE_MAX
+    };
+
 public:
     ReadFile(QString filePath);
     ~ReadFile();
@@ -18,6 +29,7 @@ private:
     bool titleFlg = false;
 
     QFile* file = NULL;
+    ExcelOperation* excelFile = NULL;
 
     void ReadeNameWF(QString infor, int lineNumber);
     void ReadP(QString& str);
@@ -29,6 +41,8 @@ private:
 
     void StartReadData(void);
     QXmlStreamReader reader;
+
+    void ReadFileSaveToExcel(QString inputStr);
 
 };
 

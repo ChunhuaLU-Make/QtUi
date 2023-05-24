@@ -4,11 +4,13 @@
 #include <QString>
 #include <QVector>
 #include <QDebug>
+#include "ExcelOperation.h"
 
 class VectorSaveDir
 {
 public:
     VectorSaveDir(void);
+    ~VectorSaveDir(void);
 
     void SaveDirToVector(QString tepStr);
 
@@ -21,6 +23,7 @@ public:
     QVector<QVector<QVector<QString>>> fileDir;
 
 private:
+    ExcelOperation* excelFile = NULL;
     QVector<QVector<QString>> levDir;
 
 

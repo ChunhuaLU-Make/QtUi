@@ -9,7 +9,7 @@
 
 #define WRITEFIL() QString hStr=QString("%1").arg(__LINE__); file->write(hStr + reader.name().toUtf8() + '\n')
 
-ReadFile::ReadFile(QString filePath):VectorSaveDir()
+ReadFile::ReadFile(QString filePath)
 {
     file = new QFile("./tempSave.txt");
     bool openOk=file->open(QIODevice::WriteOnly);
@@ -19,10 +19,12 @@ ReadFile::ReadFile(QString filePath):VectorSaveDir()
         file = NULL;
     }
 
+    excelFile = new ExcelOperation("E:\\Git\\QtUi\\TestDoc\\testEx.xlsx", "Sheet3");
+
     this->readFile(filePath);
 
 
-    //qDebug() <<"++++++++++++++++++++++++++++";
+    qDebug() <<"++++++++++++++++++++++++++++";
     //this->MyPrintFileDir();
 }
 
@@ -50,6 +52,8 @@ ReadFile::~ReadFile()
     {
         file->close();
     }
+
+    if(excelFile != NULL) delete excelFile;
 }
 
 bool ReadFile::readFile(const QString &fileName)
@@ -113,7 +117,6 @@ void ReadFile::ReadSubSection(void)
            {
                cout << reader.name();
                StartReadData();
-               this->SaveDirToLevDir();
            }
            else
            {
@@ -233,7 +236,8 @@ void ReadFile::StartReadData(void)
                 QString str;
                 str.clear();
                 ReadP(str);
-                this->SaveDirToVector(str);
+                //this->SaveDirToVector(str);
+                this->ReadFileSaveToExcel(str);
                 str += '\n';
                 file->write(str.toUtf8());
                 // qDebug() << str;
@@ -279,5 +283,45 @@ void ReadFile::SkipUnknownElement(void)
 
         }
     }
+}
+
+
+void ReadFile::ReadFileSaveToExcel(QString inputStr)
+{
+    static int row = 1;
+    DirLevAnaly levAnaly(inputStr.toStdString());
+    int dirLev = levAnaly.GetDirLev();
+    switch (dirLev)
+    {
+    case DIR_LEVE1:
+        excelFile->ExcelWriteExcel(row, 1, inputStr);
+        break;
+
+    case DIR_LEVE2:
+        excelFile->ExcelWriteExcel(row, 2, inputStr);
+        break;
+
+    case DIR_LEVE3:
+        excelFile->ExcelWriteExcel(row, 3, inputStr);
+        break;
+
+    case DIR_LEVE4:
+        excelFile->ExcelWriteExcel(row, 4, inputStr);
+        break;
+
+    case DIR_LEVE5:
+        excelFile->ExcelWriteExcel(row, 5, inputStr);
+        break;
+
+     case DIR_LEVE6:
+        excelFile->ExcelWriteExcel(row, 6, inputStr);
+        break;
+
+    default:
+        qDebug() << "Dir is error:" << dirLev;
+        break;
+    }
+
+    if(dirLev >= DIR_LEVE1 && dirLev < DIR_LEVE_MAX) row++;
 }
 

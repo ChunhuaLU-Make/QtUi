@@ -15,7 +15,6 @@ CONFIG += qaxcontainer
 SOURCES += \
     DirLevAnaly.cpp \
     ExcelOperation.cpp \
-    VectorSaveDir.cpp \
     main.cpp \
     mainwindow.cpp \
     readfile.cpp
@@ -23,7 +22,6 @@ SOURCES += \
 HEADERS += \
     DirLevAnaly.h \
     ExcelOperation.h \
-    VectorSaveDir.h \
     mainwindow.h \
     readfile.h
 

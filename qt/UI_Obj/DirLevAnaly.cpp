@@ -1,4 +1,5 @@
 #include <regex>
+#include <QDebug>
 #include "DirLevAnaly.h"
 
 DirLevAnaly::DirLevAnaly(string inputStr)
@@ -22,6 +23,7 @@ int DirLevAnaly::GetDirLev(void)
 			countCh++;
 		}
 	}
+    qDebug() << "data:" << strDir.c_str() << "countCh:" << countCh;
 	return countCh;
 }
 
