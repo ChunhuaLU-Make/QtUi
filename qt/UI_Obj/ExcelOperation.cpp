@@ -17,10 +17,17 @@
 ExcelOperation::ExcelOperation(QString path, QString sheetName)
 {
     /* Open excel file.*/
-
-    if(false == ExcelOperation::ExcelCheckFile(path))
+    enum ExcelErrorCode errorCode = ExcelOperation::ExcelCheckFile(path);
+    if(EXCEL_NOT_EXIST == errorCode)
     {
-        qDebug() << "Open file error";
+        /* Create a excel. */
+        this->newExcel(path);
+        qDebug() << "Not find file name.";
+        return;
+    }
+    else if(EXCEL_NOT_XLSX_OR_XLS == errorCode)
+    {
+        qDebug() << "Only operation xlsx、xls";
         return;
     }
 
@@ -42,8 +49,8 @@ ExcelOperation::ExcelOperation(QString path, QString sheetName)
     this->worksheet = ExcelOpenWorkSheet(sheetName);
     if(this->worksheet == NULL)
     {
+        this->appendSheet(sheetName, 1);
         qDebug() << "Not SheetName:" << sheetName;
-        return ;
     }
 
     /* Update current row column.*/
@@ -62,6 +69,117 @@ ExcelOperation::~ExcelOperation()
     }
 
     CoUninitialize();
+}
+
+void ExcelOperation::newExcel(const QString &fileName)
+{
+    QAxObject* pApplication = new QAxObject("Excel.Application");
+   if (pApplication == nullptr)
+   {
+       qWarning("pApplication\n");
+       return;
+   }
+   pApplication->dynamicCall("SetVisible(bool)",false);// false不显示窗体
+   pApplication->setProperty("DisplayAlerts",false);// 不显示任何警告信息
+   QAxObject* pWorkBooks = pApplication->querySubObject("Workbooks");
+   QAxObject* pWorkBook = NULL;
+   QFile file(fileName);
+   if (file.exists())
+   {
+       pWorkBook = pWorkBooks->querySubObject("Open(const QString&)",fileName);
+   } else
+   {
+       pWorkBooks->dynamicCall("Add");
+       pWorkBook = pApplication->querySubObject("ActiveWorkBook");
+   }
+   QAxObject* pSheets = pWorkBook->querySubObject("Sheets");
+   QAxObject* pSheet = pSheets->querySubObject("Item(int)",1);
+
+   this->excel = pApplication;
+   this->workbooks = pWorkBooks;
+   this->workbook = pWorkBook;  //Excel操作对象
+   this->worksheets = pSheets;
+   this->worksheet = pSheet;
+}
+
+
+QAxObject* ExcelOperation::appendSheet(const QString &sheetName,int cnt)
+{
+    QAxObject* pSheets = this->worksheets;
+
+    QAxObject *pLastSheet = pSheets->querySubObject("Item(int)",cnt);
+    pSheets->querySubObject("Add(QVariant)",pLastSheet->asVariant());
+    QAxObject* pSheet = pSheets->querySubObject("Item(int)",cnt);
+    pLastSheet->dynamicCall("Move(QVariant)",pSheet->asVariant());
+    pSheet->setProperty("Name",sheetName);
+
+    return pSheet;
+}
+
+bool ExcelOperation::delSheet(QString name)
+{
+    try
+    {
+        QAxObject *pFirstSheet = worksheets->querySubObject("Item(QString)", name);
+        pFirstSheet->dynamicCall("delete");
+    }
+    catch (...)
+    {
+        qCritical()<<"删除sheet失败...";
+        return false;
+    }
+
+    return true;
+}
+
+bool ExcelOperation::delSheet(int index)
+ {
+    try
+    {
+        QAxObject *pFirstSheet = worksheets->querySubObject("Item(int)", index);
+        pFirstSheet->dynamicCall("delete");
+    }
+    catch (...)
+    {
+        qCritical()<<"删除sheet失败...";
+        return false;
+    }
+    return true;
+}
+
+
+bool ExcelOperation::clearSheet(QString name)
+{
+    if(this->ExcelOpenWorkSheet(name) == NULL)
+    {
+        return false;
+    }
+
+    if(true == delSheet(name))
+    {
+        this->worksheet = appendSheet(name, 1);
+        return true;
+    }
+
+    return false;
+}
+
+bool ExcelOperation::clearSheet(int index)
+{
+    if(index > this->iWorkSheet)
+    {
+        return false;
+    }
+
+    QAxObject *sheet = this->worksheets->querySubObject("Item(int)", index);
+    QString sheetName = sheet->property("Name").toString();
+    if(true == delSheet(index))
+    {
+        this->worksheet = appendSheet(sheetName, 1);
+        return true;
+    }
+
+    return false;
 }
 
 void ExcelOperation::ExcelUpdateRowColu(void)
@@ -84,24 +202,23 @@ void ExcelOperation::ExcelUpdateRowColu(void)
     this->iStartColumn = columns->property("Column").toInt();
 }
 
-bool ExcelOperation::ExcelCheckFile(QString strPath)
+ExcelOperation::ExcelErrorCode ExcelOperation::ExcelCheckFile(QString strPath)
 {
     QFile file(strPath);
     if(!file.exists())
     {
-        qDebug() << "Not find file name.";
-        return false;
+        return EXCEL_NOT_EXIST;
     }
     else
     {
         if(!strPath.right(4).contains("xls"))
         {
-            qDebug() << "Only operation xlsx、xls";
-            return false;
+
+            return EXCEL_NOT_XLSX_OR_XLS;
         }
     }
 
-    return true;
+    return EXCEL_NORAML;
 }
 
 

@@ -11,6 +11,10 @@
 
 ReadFile::ReadFile(QString filePath)
 {
+    excelFile = new ExcelOperation("E:\\Git\\QtUi\\TestDoc\\testEx.xlsx", "Sheet1");
+}
+
+#if 0
     file = new QFile("./tempSave.txt");
     bool openOk=file->open(QIODevice::WriteOnly);
     if(!openOk)
@@ -20,7 +24,7 @@ ReadFile::ReadFile(QString filePath)
     }
 
     /* Create a excel.*/
-    excelFile = new ExcelOperation("E:\\Git\\QtUi\\TestDoc\\testEx.xlsx", "Sheet3");
+    excelFile = new ExcelOperation("E:\\Git\\QtUi\\TestDoc\\testEx.xlsx", "Sheet1");
 
     /* Excel default start row is 1. */
     row = 1;
@@ -31,7 +35,8 @@ ReadFile::ReadFile(QString filePath)
 
     qDebug() <<"++++++++++++++++++++++++++++";
     //this->MyPrintFileDir();
-}
+#endif
+
 
 void ReadFile::ReadeNameWF(QString infor, int lineNumber)
 {

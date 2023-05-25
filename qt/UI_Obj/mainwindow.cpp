@@ -2,7 +2,6 @@
 #include "ui_mainwindow.h"
 #include <QDebug>
 #include <QMessageBox>
-#include "ExcelOperation.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)

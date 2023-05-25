@@ -6,6 +6,13 @@
 
 class ExcelOperation
 {
+    enum ExcelErrorCode
+    {
+        EXCEL_NORAML,
+        EXCEL_NOT_EXIST,
+        EXCEL_NOT_XLSX_OR_XLS
+    };
+
 public:
     int iWorkSheet = 0; /* Excel文件中表的个数 */
     int iRows = 0;      //获取行数
@@ -16,6 +23,12 @@ public:
     ExcelOperation(QString path, QString sheetName);
     ~ExcelOperation();
 
+    void newExcel(const QString &fileName);// 新建一个excel
+    QAxObject* appendSheet(const QString &sheetName,int cnt);// 增加一个worksheet
+    bool delSheet(QString name);
+    bool delSheet(int index);
+    bool clearSheet(QString name);
+    bool clearSheet(int index);
     bool ExcelWriteExcel(int row, int column, QString msg);
     QString ExcelReadExcel(int row, int column);
 
@@ -29,11 +42,14 @@ private:
     QAxObject * worksheet = NULL;
 
 
-    bool ExcelCheckFile(QString strPath);
+    enum ExcelErrorCode ExcelCheckFile(QString strPath);
 
     QAxObject* ExcelOpenWorkSheet(QString sheetName);
 
     bool ExcelHeadleIsEmpty(void);
+
+
+
 
 };
 
