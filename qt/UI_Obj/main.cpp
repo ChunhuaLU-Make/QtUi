@@ -2,32 +2,7 @@
 
 #include <QApplication>
 #include <QDebug>
-#include "ExcelOperation.h"
 
-void ExcelTest(void)
-{
-    ExcelOperation fileExcel("E:\\Git\\QtUi\\TestDoc\\testEx.xlsx", "Sheet3");
-    qDebug() << "workSheet:" << fileExcel.iWorkSheet;
-    fileExcel.ExcelWriteExcel(1,1,"Waht you name");
-    fileExcel.ExcelWriteExcel(1,2,"How are you");
-    fileExcel.ExcelWriteExcel(1,3,"Yinli");
-
-    fileExcel.ExcelUpdateRowColu();
-    qDebug() << fileExcel.iRows << " " << fileExcel.iColumns;
-    qDebug() << fileExcel.iStartRow << " " << fileExcel.iStartColumn;
-
-    for(int i = fileExcel.iStartRow; i <= fileExcel.iRows+fileExcel.iStartRow - 1; i++)
-    {
-        for(int k = fileExcel.iStartColumn; k<=fileExcel.iColumns+fileExcel.iStartColumn-1; k++)
-        {
-            qDebug() << "i" << i << " k" << k;
-            QString str = fileExcel.ExcelReadExcel(i,k);
-            if(str.isEmpty() != true)
-            qDebug() <<str;
-        }
-    }
-
-}
 
 class Father
 {
@@ -48,6 +23,7 @@ void MyTest()
     qDebug() << "Start";
     father = new Father;
     qDebug() << "Start gouzhao";
+    if(father != NULL)
     delete father;
 }
 

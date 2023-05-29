@@ -18,28 +18,31 @@ ExcelOperation::ExcelOperation(QString path, QString sheetName)
 {
     /* Open excel file.*/
     enum ExcelErrorCode errorCode = ExcelOperation::ExcelCheckFile(path);
-    if(EXCEL_NOT_EXIST == errorCode)
-    {
-        /* Create a excel. */
-        this->newExcel(path);
-        qDebug() << "Not find file name.";
-        return;
-    }
-    else if(EXCEL_NOT_XLSX_OR_XLS == errorCode)
+    if(EXCEL_NOT_XLSX_OR_XLS == errorCode)
     {
         qDebug() << "Only operation xlsx¡¢xls";
         return;
     }
+
 
     CoInitializeEx(NULL, COINIT_MULTITHREADED);
 
     excel = new QAxObject("Excel.Application");
     excel->dynamicCall("SetVisible(bool)", false);
     workbooks = excel->querySubObject("WorkBooks");
-
-
-    // Open path file.
-    workbook = workbooks->querySubObject("Open(QString&)", path);
+    if(EXCEL_NOT_EXIST == errorCode)
+    {
+        /* Create a excel. */
+       workbooks->dynamicCall("Add");
+       workbook = excel->querySubObject("ActiveWorkBook");
+       workbook->dynamicCall("SaveAs(const QString&)",path);
+       qDebug() << "File not exit, Create new file";
+    }
+    else
+    {
+        // Open path file.
+        workbook = workbooks->querySubObject("Open(QString&)", path);
+    }
 
     // Get opened excel file all work sheet.
     worksheets = workbook->querySubObject("WorkSheets");
@@ -55,10 +58,12 @@ ExcelOperation::ExcelOperation(QString path, QString sheetName)
 
     /* Update current row column.*/
     ExcelUpdateRowColu();
+
 }
 
 ExcelOperation::~ExcelOperation()
 {
+
     workbook->dynamicCall("Save()");
     workbook->dynamicCall("Close()");
     excel->dynamicCall("Quit()");
@@ -73,6 +78,9 @@ ExcelOperation::~ExcelOperation()
 
 void ExcelOperation::newExcel(const QString &fileName)
 {
+    qDebug() << "New excel;";
+
+#if 0
     QAxObject* pApplication = new QAxObject("Excel.Application");
    if (pApplication == nullptr)
    {
@@ -84,25 +92,36 @@ void ExcelOperation::newExcel(const QString &fileName)
    QAxObject* pWorkBooks = pApplication->querySubObject("Workbooks");
    QAxObject* pWorkBook = NULL;
    QFile file(fileName);
-   if (file.exists())
+   if (file.exists() == false)
    {
-       pWorkBook = pWorkBooks->querySubObject("Open(const QString&)",fileName);
-   } else
-   {
+       qDebug() << "hello error";
        pWorkBooks->dynamicCall("Add");
        pWorkBook = pApplication->querySubObject("ActiveWorkBook");
+       pWorkBook->dynamicCall("SaveAs(const QString&)",fileName);
+   } else
+   {
+
+
    }
-   QAxObject* pSheets = pWorkBook->querySubObject("Sheets");
-   QAxObject* pSheet = pSheets->querySubObject("Item(int)",1);
+   QAxObject* pSheets = NULL;//pWorkBook->querySubObject("Sheets");
+   QAxObject* pSheet = NULL; //pSheets->querySubObject("Item(int)",1);
 
    this->excel = pApplication;
    this->workbooks = pWorkBooks;
    this->workbook = pWorkBook;  //Excel²Ù×÷¶ÔÏó
    this->worksheets = pSheets;
    this->worksheet = pSheet;
+#endif
+
 }
 
-
+/**
+ * TODO the interface not test.
+ * @brief ExcelOperation::appendSheet
+ * @param sheetName
+ * @param cnt
+ * @return
+ */
 QAxObject* ExcelOperation::appendSheet(const QString &sheetName,int cnt)
 {
     QAxObject* pSheets = this->worksheets;
@@ -116,6 +135,12 @@ QAxObject* ExcelOperation::appendSheet(const QString &sheetName,int cnt)
     return pSheet;
 }
 
+/**
+ * TODO the interface not test.
+ * @brief ExcelOperation::delSheet
+ * @param name
+ * @return
+ */
 bool ExcelOperation::delSheet(QString name)
 {
     try
@@ -132,6 +157,12 @@ bool ExcelOperation::delSheet(QString name)
     return true;
 }
 
+/**
+ * TODO the interface not test.
+ * @brief ExcelOperation::delSheet
+ * @param index
+ * @return
+ */
 bool ExcelOperation::delSheet(int index)
  {
     try
@@ -147,7 +178,12 @@ bool ExcelOperation::delSheet(int index)
     return true;
 }
 
-
+/**
+ * TODO the interface not test.
+ * @brief ExcelOperation::clearSheet
+ * @param name
+ * @return
+ */
 bool ExcelOperation::clearSheet(QString name)
 {
     if(this->ExcelOpenWorkSheet(name) == NULL)
@@ -164,6 +200,12 @@ bool ExcelOperation::clearSheet(QString name)
     return false;
 }
 
+/**
+ * TODO the interface not test.
+ * @brief ExcelOperation::clearSheet
+ * @param index
+ * @return
+ */
 bool ExcelOperation::clearSheet(int index)
 {
     if(index > this->iWorkSheet)
@@ -300,18 +342,3 @@ QString ExcelOperation::ExcelReadExcel(int row, int column)
 }
 
 
-#if 0
-int main(int argc, char *argv[])
-{
-    //QCoreApplication a(argc, argv);
-    QString strPath = QDir::currentPath() + "/key.xlsx" ;
-
-    qDebug() << strPath;
-
-    read_excel(strPath);
-
-    write_excel(strPath, 3, 2);
-
-    //return a.exec();
-}
-#endif
