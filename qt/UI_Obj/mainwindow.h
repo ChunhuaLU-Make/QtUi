@@ -16,15 +16,14 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void MyPrintf();
-    //void SaveFileDirToExcel(void);
+    int a = 100, b = 200;
 
 private:
     Ui::MainWindow *ui;
     ReadFile* readXml;
 
 private slots:
-    //void MyPrintf();
+   void MyPrintf();
 
 };
 #endif // MAINWINDOW_H

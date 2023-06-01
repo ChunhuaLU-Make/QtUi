@@ -2,5 +2,8 @@
     <qresource prefix="/">
         <file>ui_picture/dog.png</file>
         <file>ui_picture/Rabbit.jpg</file>
+        <file>ui_picture/family1.jpg</file>
+        <file>ui_picture/family2.jpg</file>
+        <file>ui_picture/family3.jpg</file>
     </qresource>
 </RCC>
