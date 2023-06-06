@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>638</width>
-    <height>548</height>
+    <height>450</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -35,36 +35,43 @@
    <widget class="QWidget" name="widget" native="true">
     <property name="geometry">
      <rect>
-      <x>130</x>
-      <y>60</y>
-      <width>288</width>
-      <height>47</height>
+      <x>60</x>
+      <y>10</y>
+      <width>361</width>
+      <height>51</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>DOCX_PATH</string>
+        <string>DocPtah</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QLineEdit" name="lineEdit"/>
      </item>
+     <item>
+      <widget class="QPushButton" name="pushButton">
+       <property name="text">
+        <string>Start</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QProgressBar" name="progressBar">
     <property name="geometry">
      <rect>
-      <x>220</x>
-      <y>230</y>
-      <width>93</width>
-      <height>29</height>
+      <x>140</x>
+      <y>330</y>
+      <width>120</width>
+      <height>27</height>
      </rect>
     </property>
-    <property name="text">
-     <string>PushButton</string>
+    <property name="value">
+     <number>24</number>
     </property>
    </widget>
   </widget>

@@ -22,6 +22,9 @@ private:
     Ui::MainWindow *ui;
     ReadFile* readXml;
 
+protected:
+    void paintEvent(QPaintEvent* tempP);
+
 private slots:
    void MyPrintf();
 
