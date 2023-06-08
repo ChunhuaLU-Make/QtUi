@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTimer>
+#include <QVector>
 #include "readfile.h"
 
 QT_BEGIN_NAMESPACE
@@ -16,14 +18,13 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    int a = 100, b = 200;
+    int a = 0;
 
 private:
     Ui::MainWindow *ui;
     ReadFile* readXml;
-
-protected:
-    void paintEvent(QPaintEvent* tempP);
+    QTimer *timer = NULL;
+    QVector<QString> imp;
 
 private slots:
    void MyPrintf();

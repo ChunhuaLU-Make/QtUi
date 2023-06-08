@@ -9,34 +9,27 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    imp.append(":/ui_picture/dog.png");
+    imp.append(":/ui_picture/family1.jpg");
+    imp.append(":/ui_picture/family2.jpg");
+    imp.append(":/ui_picture/family3.jpg");
+    imp.append(":/ui_picture/Rabbit.jpg");
+
     ui->setupUi(this);
-#if 0
-    QPushButton* but = new QPushButton(this);
-    but->setText("hello");
 
-    connect(but, &QPushButton::released, this,
-            [=]()
-            {
-                but->setStyleSheet("color : rgba(0, 0, 0, 100)");
+    timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this,
+    [=]()
+    {
+        QString str = (QString)imp.value(a);
+        ui->label->setPixmap(QPixmap(str.toUtf8()));
 
-                qDebug() << "Hello world:" << a << b;
-            }
-            );
-    qDebug() <<"a" << a;
+        a++;
+        a = a < imp.size()?a:0;
+    });
+    timer->start(3000);
 
-
-#endif
-    this->resize(500,500);
-
-}
-
-
-void MainWindow::paintEvent(QPaintEvent* tempP)
-{
-    QPainter p;
-    p.begin(this);
-    p.drawPixmap(0,0,width(),height(), QPixmap(":./ui_picture/Rabbit.jpg"));
-    p.end();
+    connect(ui->Start, &QPushButton::released, this, &MainWindow::MyPrintf);
 }
 
 
