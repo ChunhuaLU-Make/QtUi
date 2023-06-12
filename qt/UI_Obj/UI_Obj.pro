@@ -1,4 +1,4 @@
-QT       += core gui testlib axcontainer
+QT       += core gui axcontainer 	#testlib 会导致出现控制台窗口，也是为了方便看调试信息
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

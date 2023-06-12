@@ -2,7 +2,7 @@
 #include <iostream>
 #include <QDebug>
 #include <QFile>
-#include <QtTest>
+//#include <QtTest>
 #include "DirLevAnaly.h"
 
 #define cout qDebug()<<"["<<__FUNCTION__<<";"<<__LINE__<<"]"
