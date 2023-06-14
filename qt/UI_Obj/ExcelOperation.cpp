@@ -14,7 +14,13 @@
 #include <QVariant>
 
 
-ExcelOperation::ExcelOperation(QString path, QString sheetName)
+ExcelOperation::ExcelOperation(void)
+{
+
+
+}
+
+void ExcelOperation::ExcelOpen(QString path, QString sheetName)
 {
     /* Open excel file.*/
     enum ExcelErrorCode errorCode = ExcelOperation::ExcelCheckFile(path);
@@ -33,10 +39,10 @@ ExcelOperation::ExcelOperation(QString path, QString sheetName)
     if(EXCEL_NOT_EXIST == errorCode)
     {
         /* Create a excel. */
-       workbooks->dynamicCall("Add");
-       workbook = excel->querySubObject("ActiveWorkBook");
-       workbook->dynamicCall("SaveAs(const QString&)",path);
-       qDebug() << "File not exit, Create new file";
+        workbooks->dynamicCall("Add");
+        workbook = excel->querySubObject("ActiveWorkBook");
+        workbook->dynamicCall("SaveAs(const QString&)",path);
+        qDebug() << "File not exit, Create new file";
     }
     else
     {
@@ -58,12 +64,10 @@ ExcelOperation::ExcelOperation(QString path, QString sheetName)
 
     /* Update current row column.*/
     ExcelUpdateRowColu();
-
 }
 
-ExcelOperation::~ExcelOperation()
+void ExcelOperation::ExcelClose(void)
 {
-
     workbook->dynamicCall("Save()");
     workbook->dynamicCall("Close()");
     excel->dynamicCall("Quit()");
@@ -73,7 +77,17 @@ ExcelOperation::~ExcelOperation()
         excel = NULL;
     }
 
+    /*Close COM.*/
     CoUninitialize();
+}
+
+ExcelOperation::~ExcelOperation()
+{
+    delete excel;
+    delete workbooks;
+    delete workbook;
+    delete worksheets;
+    delete worksheet;
 }
 
 void ExcelOperation::newExcel(const QString &fileName)

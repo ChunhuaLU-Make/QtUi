@@ -3,15 +3,20 @@
 #include <QXmlStreamReader>
 #include <QFile>
 #include <QVector>
+#include <QThread>
 #include "ExcelOperation.h"
 
-class ReadFile
+class ReadFile:public QThread
 {
+    Q_OBJECT
 
 public:
-    ReadFile(QString filePath);
+    ReadFile();
     ~ReadFile();
     bool readFile(const QString &fileName);
+
+    void ReadFileCall(QString filePath);
+    bool ReadFileIsFile(QString fileName);
 
 private:
     int subSectionCont = 0;
@@ -19,7 +24,10 @@ private:
     int row = 0;
     bool titleFlg = false;
 
+    QString filePath;
+
     QFile* file = NULL;
+
     ExcelOperation* excelFile = NULL;
 
     void ReadeNameWF(QString infor, int lineNumber);
@@ -34,6 +42,20 @@ private:
     QXmlStreamReader reader;
 
     void ReadFileSaveToExcel(QString inputStr);
+
+    void MyPrintf(QString debugInfor);
+
+    QFile* ReadFileOpenLogFile(void);
+    void ReadFileCloseLogFile(QFile* fileHandle);
+
+protected:
+    virtual void run(void);
+
+signals:
+    void MyPrintfSig(const QString &infor);
+
+public slots:
+    void ReadFileSlot(QString str);
 
 };
 

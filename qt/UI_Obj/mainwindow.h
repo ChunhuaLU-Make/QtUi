@@ -4,7 +4,8 @@
 #include <QMainWindow>
 #include <QTimer>
 #include <QVector>
-#include "readfile.h"
+#include <QPushButton>
+#include <readfile.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -17,20 +18,17 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    void SendSignalOutput(const QString &infor);
     int a = 0;
+    QString GetLineEditData(void);
 
 private:
     Ui::MainWindow *ui;
-    ReadFile* readXml = NULL;
     QTimer *timer = NULL;
+    ReadFile* readXml = NULL;
     QVector<QString> imp;
 
 signals:
-    void OuputDebug(QString infor);
-
-private slots:
-   void MyPrintf();
+    void SendLineEditData(QString path);
 
 };
 #endif // MAINWINDOW_H

@@ -3,8 +3,9 @@
 
 #include <QString>
 #include <QAxObject>
+#include <QObject>
 
-class ExcelOperation
+class ExcelOperation:public QObject
 {
     enum ExcelErrorCode
     {
@@ -20,7 +21,7 @@ public:
     int iStartRow = 0;  //数据的起始行
     int iStartColumn = 0;   //数据的起始列
 
-    ExcelOperation(QString path, QString sheetName);
+    ExcelOperation();
     ~ExcelOperation();
 
     void newExcel(const QString &fileName);// 新建一个excel
@@ -33,6 +34,9 @@ public:
     QString ExcelReadExcel(int row, int column);
 
     void ExcelUpdateRowColu(void);
+
+    void ExcelOpen(QString path, QString sheetName);
+    void ExcelClose(void);
 
 private:
     QAxObject *excel = NULL;    //本例中，excel设定为Excel文件的操作对象
@@ -48,10 +52,9 @@ private:
 
     bool ExcelHeadleIsEmpty(void);
 
-
-
-
 };
 
 
 #endif // EXCELOPERATION_H
+
+

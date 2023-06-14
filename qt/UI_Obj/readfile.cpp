@@ -2,6 +2,7 @@
 #include <iostream>
 #include <QDebug>
 #include <QFile>
+#include <QFileInfo>
 //#include <QtTest>
 #include "DirLevAnaly.h"
 
@@ -9,34 +10,58 @@
 
 #define WRITEFIL() QString hStr=QString("%1").arg(__LINE__); file->write(hStr + reader.name().toUtf8() + '\n')
 
-ReadFile::ReadFile(QString filePath)
+ReadFile::ReadFile()
 {
+    /* Open log file. */
+    file = this->ReadFileOpenLogFile();
+}
 
-    file = new QFile("./tempSave.txt");
-    bool openOk=file->open(QIODevice::WriteOnly);
-    if(!openOk)
-    {
-        qDebug() << "Open fiel fail";
-        file = NULL;
-    }
+void ReadFile::ReadFileSlot(QString str)
+{
+    /* Save xml file path. */
+    filePath = str;
+}
 
-    QFile fileTemp("E:\\Git\\QtUi\\TestDoc\\testEx.xlsx");
+
+bool ReadFile::ReadFileIsFile(QString fileName)
+{
+    QFileInfo fileInfo(fileName);
+    return fileInfo.isFile();
+}
+
+void ReadFile::ReadFileCall(QString filePath)
+{
+    QFileInfo fileInfo(filePath);
+    QString excelPath = fileInfo.absolutePath() + "/testEx.xlsx";
+    qDebug() << "excelPath:" << excelPath;
+
+    excelPath = "D:\\lgx\\Temp\\Qt\\QtUi-main\\QtUi-main\\TestDoc\\testEx.xlsx";
+
+    QFile fileTemp(excelPath);
     if(fileTemp.exists())
-    fileTemp.remove();
-    /* Create a excel.*/
-    excelFile = new ExcelOperation("E:\\Git\\QtUi\\TestDoc\\testEx.xlsx", "Sheet1");
+        fileTemp.remove();
+
+    /* Create a excel objec.*/
+    excelFile = new ExcelOperation();
+
+    /* Open excel.*/
+    excelFile->ExcelOpen(excelPath, "Sheet1");
 
     /* Excel default start row is 1. */
     row = 1;
 
-    /* Analysis XML. */
+    /* Analysis XML. ans save data to excel.*/
     this->readFile(filePath);
 
+    /* Close excel.*/
+    excelFile->ExcelClose();
 
-    qDebug() <<"++++++++++++++++++++++++++++";
+    MyPrintf("+++++++++++++END+++++++++++++++");
+    MyPrintf("+++++++++++++END+++++++++++++++");
+    MyPrintf("+++++++++++++END+++++++++++++++");
+    MyPrintf("+++++++++++++END+++++++++++++++");
     //this->MyPrintFileDir();
 }
-
 
 void ReadFile::ReadeNameWF(QString infor, int lineNumber)
 {
@@ -57,12 +82,11 @@ void ReadFile::ReadeNameWF(QString infor, int lineNumber)
 
 ReadFile::~ReadFile()
 {
-    if(file->exists())
-    {
-        file->close();
-    }
+    /* Close log file.*/
+    this->ReadFileCloseLogFile(this->file);
 
-    if(excelFile != NULL) delete excelFile;
+    //delete this->file;
+    delete this->excelFile;
 }
 
 bool ReadFile::readFile(const QString &fileName)
@@ -78,7 +102,7 @@ bool ReadFile::readFile(const QString &fileName)
        {
            if (reader.isStartElement())
            {
-               if (reader.name() == "wordDocument")
+               if (reader.name().toString() == "wordDocument")
                {
                    ReadBody();
                }
@@ -110,7 +134,7 @@ bool ReadFile::readFile(const QString &fileName)
 
 void ReadFile::ReadSubSection(void)
 {
-    Q_ASSERT(reader.isStartElement() && reader.name() == "body");
+    Q_ASSERT(reader.isStartElement() && reader.name().toString() == "body");
 
     while (!reader.atEnd())
     {
@@ -122,9 +146,9 @@ void ReadFile::ReadSubSection(void)
 
        if (reader.isStartElement())
        {
-           if (reader.name() == "sub-section")
+           if (reader.name().toString() == "sub-section")
            {
-               cout << reader.name();
+               cout << reader.name().toString();
                StartReadData();
            }
            else
@@ -141,7 +165,7 @@ void ReadFile::ReadSubSection(void)
 
 void ReadFile::ReadBody(void)
 {
-    Q_ASSERT(reader.isStartElement() && reader.name() == "wordDocument");
+    Q_ASSERT(reader.isStartElement() && reader.name().toString() == "wordDocument");
     reader.readNext();
     while (!reader.atEnd())
     {
@@ -152,7 +176,7 @@ void ReadFile::ReadBody(void)
        }
        if (reader.isStartElement())
        {
-           if (reader.name() == "body")
+           if (reader.name().toString() == "body")
            {
                ReadSubSection();
            }
@@ -172,7 +196,7 @@ void ReadFile::ReadBody(void)
 bool ReadFile::AnalyseData(QString& str)
 {
     static bool listPrFlg = false;
-    QStringRef rderName = reader.name();
+    QString rderName = reader.name().toString();
     if(rderName == "listPr")
     {
         //Set title flag.
@@ -227,7 +251,7 @@ void ReadFile::ReadP(QString& str)
 
 void ReadFile::StartReadData(void)
 {
-    Q_ASSERT(reader.isStartElement() && reader.name() == "sub-section");
+    Q_ASSERT(reader.isStartElement() && reader.name().toString() == "sub-section");
     reader.readNext();
     while (!reader.atEnd())
     {
@@ -239,7 +263,7 @@ void ReadFile::StartReadData(void)
 
         if (reader.isStartElement())
         {
-            QStringRef rderName = reader.name();
+            QString rderName = reader.name().toString();
             if(rderName == 'p')
             {
                 QString str;
@@ -248,11 +272,7 @@ void ReadFile::StartReadData(void)
 
                 /* Save data to excel.*/
                 this->ReadFileSaveToExcel(str);
-
-                str += '\n';
-                file->write(str.toUtf8());
-                // qDebug() << str;
-
+                MyPrintf(str);
             }
             else if(rderName == "sub-section")
             {
@@ -310,5 +330,67 @@ void ReadFile::ReadFileSaveToExcel(QString inputStr)
         excelFile->ExcelWriteExcel(row, dirLev, inputStr);
         row++;
     }
+}
+
+void ReadFile::MyPrintf(QString debugInfor)
+{
+    QString str = debugInfor += '\n';
+
+    emit MyPrintfSig(str);
+    file->write(str.toUtf8());
+}
+
+/**
+ * Open a text file, if file not exist,Create it.
+ * @brief ReadFile::OpenLogFile
+ * @return QFile
+ */
+QFile* ReadFile::ReadFileOpenLogFile(void)
+{
+    QFile* tempFile = new QFile("./tempSave.txt");
+    bool openOk=tempFile->open(QIODevice::WriteOnly);
+    if(!openOk)
+    {
+        MyPrintf("Open fiel fail");
+        tempFile = NULL;
+    }
+    return tempFile;
+}
+
+void ReadFile::ReadFileCloseLogFile(QFile* fileHandle)
+{
+    if(fileHandle != NULL)
+    {
+        fileHandle->close();
+        delete fileHandle;
+    }
+}
+
+
+void ReadFile::run(void)
+{
+#if 1
+    if(filePath.isEmpty())
+    {
+        MyPrintf("Error:" + filePath);
+        return ;
+    }
+    MyPrintf("XmlPaht:" + filePath);
+    ReadFileCall(filePath);
+#else
+
+    xcelPath = "D:\\lgx\\Temp\\Qt\\QtUi-main\\QtUi-main\\TestDoc\\testEx.xlsx";
+
+    QFile fileTemp(excelPath);
+    if(fileTemp.exists())
+        fileTemp.remove();
+
+    /* Create a excel.*/
+    excelFile = new ExcelOperation(excelPath, "Sheet1");
+
+    /* Excel default start row is 1. */
+    row = 1;
+
+#endif
 }
 
