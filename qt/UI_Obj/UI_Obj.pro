@@ -35,3 +35,10 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     Res.qrc
+
+INCLUDEPATH += -I 'D:/Program Files/Python3.11.4/Python311/include'
+win32:LIBS += "D:/Program Files/Python3.11.4/Python311/libs/python311.lib"
+win32:LIBS += "D:/Program Files/Python3.11.4/Python311/libs/python311_d.lib"
+
+DISTFILES += \
+    WordToExcel.py
