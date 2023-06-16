@@ -1,0 +1,46 @@
+QT       += core gui #axcontainer 	#testlib 会导致出现控制台窗口，也是为了方便看调试信息
+
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+CONFIG += c++11
+
+CONFIG += qaxcontainer
+
+
+
+# You can make your code fail to compile if it uses deprecated APIs.
+# In order to do so, uncomment the following line.
+#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+
+SOURCES += \
+    DirLevAnaly.cpp \
+    ExcelOperation.cpp \
+    main.cpp \
+    mainwindow.cpp \
+    readfile.cpp \
+    QComDocx.cpp
+
+HEADERS += \
+    DirLevAnaly.h \
+    ExcelOperation.h \
+    mainwindow.h \
+    readfile.h \
+    QComDocx.h
+
+FORMS += \
+    mainwindow.ui
+
+# Default rules for deployment.
+qnx: target.path = /tmp/$${TARGET}/bin
+else: unix:!android: target.path = /opt/$${TARGET}/bin
+!isEmpty(target.path): INSTALLS += target
+
+INCLUDEPATH += -I 'D:/Program Files/Python3.11.4/Python311/include'
+win32:LIBS += "D:/Program Files/Python3.11.4/Python311/libs/python311.lib"
+win32:LIBS += "D:/Program Files/Python3.11.4/Python311/libs/python311_d.lib"
+
+RESOURCES += \
+    Res.qrc
+
+DISTFILES += \
+    WordToExcel.py
