@@ -5,7 +5,7 @@
 #include <QTimer>
 #include <QVector>
 #include <QPushButton>
-#include <readfile.h>
+#include "SigDistribution.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -24,7 +24,7 @@ public:
 private:
     Ui::MainWindow *ui;
     QTimer *timer = NULL;
-    ReadFile* readXml = NULL;
+    SigDistribution* sigDis = NULL;
     QVector<QString> imp;
 
 

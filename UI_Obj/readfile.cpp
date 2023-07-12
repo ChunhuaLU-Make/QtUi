@@ -6,6 +6,7 @@
 //#include <QtTest>
 #include "DirLevAnaly.h"
 
+
 #define cout qDebug()<<"["<<__FUNCTION__<<";"<<__LINE__<<"]"
 
 #define WRITEFIL() QString hStr=QString("%1").arg(__LINE__); file->write(hStr + reader.name().toUtf8() + '\n')
@@ -370,13 +371,10 @@ void ReadFile::ReadFileCloseLogFile(QFile* fileHandle)
 void ReadFile::run(void)
 {
 #if 1
-    if(filePath.isEmpty())
-    {
-        MyPrintf("Error:" + filePath);
-        return ;
-    }
-    MyPrintf("XmlPaht:" + filePath);
-    ReadFileCall(filePath);
+
+
+
+    //ReadFileCall(filePath);
 #else
 
     xcelPath = "D:\\lgx\\Temp\\Qt\\QtUi-main\\QtUi-main\\TestDoc\\testEx.xlsx";

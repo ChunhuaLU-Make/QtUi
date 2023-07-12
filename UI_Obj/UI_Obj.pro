@@ -18,14 +18,19 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     readfile.cpp \
-    QComDocx.cpp
+    QComDocx.cpp \
+    CallPyInterface.cpp \
+    SigDistribution.cpp
+
 
 HEADERS += \
     DirLevAnaly.h \
     ExcelOperation.h \
     mainwindow.h \
     readfile.h \
-    QComDocx.h
+    QComDocx.h \
+    CallPyInterface.h \
+    SigDistribution.h
 
 FORMS += \
     mainwindow.ui
@@ -35,9 +40,11 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-INCLUDEPATH += -I 'D:/Program Files/Python3.11.4/Python311/include'
-win32:LIBS += "D:/Program Files/Python3.11.4/Python311/libs/python311.lib"
-win32:LIBS += "D:/Program Files/Python3.11.4/Python311/libs/python311_d.lib"
+INCLUDEPATH += $$PWD/include/
+INCLUDEPATH += $$PWD/Lib/
+
+Release:LIBS += -L$$PWD/./ -lpython311
+Debug:LIBS += -L$$PWD/./ -lpython311_d
 
 RESOURCES += \
     Res.qrc

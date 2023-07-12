@@ -7,7 +7,7 @@
 #include <QPixmap>
 #include <QBitmap>
 #include <QFileDialog>
-#include "readfile.h"
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -25,15 +25,14 @@ MainWindow::MainWindow(QWidget *parent)
     /* Create timer.*/
     timer = new QTimer(this);
 
-    readXml = new ReadFile();
-
     QFont textFont("Microsoft YaHei",16);
     ui->textEdit->setStyleSheet("QTextEdit{background-color:transparent;color:rgb(0,128,255)}");
     ui->textEdit->setFont(textFont);
     ui->textEdit->moveCursor(QTextCursor::End);
 
     QFont font("Microsoft YaHei",14);
-    //设置label背景颜色 ， 字体颜色
+
+    //Set the label background colour. font colour.
     ui->radioButton->setStyleSheet("QRadioButton{background-color:transparent;color:rgb(195, 255, 104)}"); //Red, Green, blue
     ui->radioButton->setFont(font);
     ui->radioButton_2->setStyleSheet("QRadioButton{background-color:transparent;color:rgb(195, 255, 104)}");
@@ -43,8 +42,16 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->pushButton, &QPushButton::released, this, &MainWindow::ClickStart);
 
+    sigDis = new SigDistribution();
 
-    /*Picture nex. */
+    /* Set word swithc to excel. */
+    connect(ui->radioButton, &QRadioButton::pressed, sigDis, &SigDistribution::RadioInforWtoE);
+
+    /* Set Excel switch to word. */
+     connect(ui->radioButton_2, &QRadioButton::pressed, sigDis, &SigDistribution::RadioInforEtoW);
+
+
+    /*Picture next. */
     connect(timer, &QTimer::timeout, this,
     [=]()
     {
@@ -58,9 +65,11 @@ MainWindow::MainWindow(QWidget *parent)
     /* Start timer, set timeout time is 3s. */
     timer->start(3000);
 
-    connect(this, &MainWindow::SendSrcFileName, readXml, &ReadFile::ReadFileSlot);
+    /* Send file name to ReadFile. */
+    connect(this, &MainWindow::SendSrcFileName, sigDis, &SigDistribution::ReadFileSlot);
 
-    connect(readXml, &ReadFile::MyPrintfSig, ui->textEdit, [=](const QString& text)
+    /* Print information to TextEdit. */
+    connect(sigDis, &SigDistribution::MyPrintfSig, ui->textEdit, [=](const QString& text)
             {
         ui->textEdit->insertPlainText(text);
         ui->textEdit->moveCursor(QTextCursor::End);
@@ -69,17 +78,15 @@ MainWindow::MainWindow(QWidget *parent)
     /* XiGou call end last call send destroyed signal. */
     connect(this, &MainWindow::destroyed, this, [=]()
     {
-        if(readXml->isRunning() == true)
+        if(sigDis->isRunning() == true)
         {
             /* Release resources*/
-            readXml->quit();
-            readXml->wait();
-            readXml->deleteLater(); //delete readXml.
-            delete readXml;
+            sigDis->quit();
+            sigDis->wait();
+            sigDis->deleteLater(); //delete readXml.
+            delete sigDis;
         }
     });
-
-
 }
 
 void MainWindow::ClickStart(void)
@@ -96,7 +103,7 @@ void MainWindow::ClickStart(void)
         emit SendSrcFileName(fileName);
 
         /* Start readXml thread */
-        readXml->start();
+        sigDis->start();
 
         qDebug() <<"FaileName:" << fileName;
     }
